@@ -20,6 +20,7 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           children: const [
             CardSwiper(),
+            SizedBox(height: 80),
             MovieSlider(),
           ],
         ),)
