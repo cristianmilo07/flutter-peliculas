@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 
+import '../models/models.dart';
+
 class MovieSlider extends StatelessWidget {
-  const MovieSlider({Key? key}) : super(key: key);
+  final List<Movie> movies;
+  final String? title;
+
+  const MovieSlider({
+    Key? key,
+    required this.movies,
+    this.title,
+    }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,20 +21,21 @@ class MovieSlider extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 50),
-            child: Text('Populares', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-          ),
+
+          // Si no hay titulo, no deben de mostrar este widget
+          if (this.title != null)
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 50),
+              child: Text(this.title!, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+            ),
           
           const SizedBox(height: 5),
           
           Expanded(
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: 20,
-              itemBuilder: ( _, int index) {
-                return const _MoviePoster();
-              },
+              itemCount: movies.length,
+              itemBuilder: ( _, int index) => _MoviePoster( movies[index]),
             ),
           ),
           
@@ -36,7 +46,9 @@ class MovieSlider extends StatelessWidget {
 }
 
 class _MoviePoster extends StatelessWidget {
-  const _MoviePoster({Key? key}) : super(key: key);
+
+  final Movie movie;
+  const _MoviePoster(this.movie);
 
   @override
   Widget build(BuildContext context) {
@@ -51,17 +63,19 @@ class _MoviePoster extends StatelessWidget {
             onTap: () => Navigator.pushNamed(context, 'details', arguments: 'movie-instance'),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: const FadeInImage(
+              child: FadeInImage(
                 placeholder: AssetImage('assets/no-image.jpg'),
-                image: NetworkImage('https://via.placeholder.com/300x400'),
+                image: NetworkImage(movie.fullPosterImg),
                 width: 130,
                 height: 190,
                 fit: BoxFit.cover,
                 ),
             ),
           ),
-            const Text('Starwars',
-                overflow: TextOverflow.ellipsis,      
+            Text(
+                movie.title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,     
             )
         ],
       ),
